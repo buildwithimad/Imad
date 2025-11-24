@@ -40,22 +40,22 @@ export default function About() {
     {
       id: "01",
       title: "IDENTITY",
-      subtitle: "Creative Developer",
-      content: "I bridge the gap between logic and aesthetics. A full-stack developer obsessed with performance, structure, and digital architecture.",
+      subtitle: "Full Stack Developer",
+      content: "Specializing in MERN & Next.js, I build scalable web applications, SaaS dashboards, and business workflow systems. Focused on delivering clean, maintainable code and real business value.",
       color: "text-cyan-400"
     },
     {
       id: "02",
       title: "STACK",
       subtitle: "The Arsenal",
-      content: "React, Next.js, Three.js, WebGL. I don't just write code; I engineer performant ecosystems that scale without compromising design.",
+      content: "React.js, Next.js, Node.js, Express, MongoDB, PostgreSQL. I leverage modern tools like Docker and AWS to engineer performant ecosystems that scale.",
       color: "text-purple-400"
     },
     {
       id: "03",
       title: "PHILOSOPHY",
-      subtitle: "Form Follows Function",
-      content: "Minimalism isn't about having less. It's about showing the essential. My approach removes the noise to let the user experience shine.",
+      subtitle: "Performance & Security",
+      content: "Skilled in API development, authentication, and optimization. I believe in robust architecture where security (JWT, RBAC) and speed go hand in hand.",
       color: "text-emerald-400"
     },
     {
@@ -76,15 +76,15 @@ export default function About() {
   }, [sections.length]);
 
   return (
-    <section className="min-h-screen w-full bg-[#0a0a0a] text-white flex flex-col items-center justify-center relative px-4 py-20 selection:bg-white selection:text-black">
-      
+    <section id="about" className="min-h-screen w-full bg-[#0a0a0a] text-white flex flex-col items-center justify-center relative px-4 py-20 selection:bg-white selection:text-black">
+
       {/* Background Grid Pattern - Pure CSS */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" 
-           style={{ backgroundImage: 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
+        style={{ backgroundImage: 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
       </div>
 
       <div className="w-full max-w-6xl mx-auto relative z-10">
-        
+
         {/* Header Section with decorative lines */}
         <div className="mb-12 md:mb-16 border-b border-white/20 pb-6 md:pb-8 flex flex-col md:flex-row justify-between items-end">
           <motion.div
@@ -170,9 +170,8 @@ export default function About() {
                 <button
                   key={index}
                   onClick={() => setCurrentSection(index)}
-                  className={`h-2 flex-1 transition-all duration-300 ${
-                    index === currentSection ? 'bg-white' : 'bg-white/10 hover:bg-white/30'
-                  }`}
+                  className={`h-2 flex-1 transition-all duration-300 ${index === currentSection ? 'bg-white' : 'bg-white/10 hover:bg-white/30'
+                    }`}
                 />
               ))}
             </div>
@@ -183,9 +182,9 @@ export default function About() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2">
               {[
-                { label: "PROJECTS", value: "50+" },
-                { label: "EXP YRS", value: "03+" },
-                { label: "CLIENTS", value: "25+" },
+                { label: "PROJECTS", value: "10+" },
+                { label: "EXP YRS", value: "05+" },
+                { label: "CLIENTS", value: "1K+" },
                 { label: "COMMITS", value: "2k+" }
               ].map((stat, index) => (
                 <motion.div
@@ -211,8 +210,8 @@ export default function About() {
               <h4 className="font-mono text-xs sm:text-sm text-gray-500 uppercase mb-3 sm:mb-4 border-b border-white/10 pb-2">Core Competencies</h4>
               {[
                 { skill: "React / Next.js", level: 95 },
-                { skill: "WebGL / Three.js", level: 88 },
-                { skill: "TypeScript", level: 92 }
+                { skill: "Node.js / Backend", level: 90 },
+                { skill: "DevOps / Docker", level: 85 }
               ].map((item, index) => (
                 <div key={item.skill} className="group">
                   <div className="flex justify-between text-xs sm:text-sm mb-2 font-medium">

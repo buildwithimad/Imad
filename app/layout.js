@@ -1,10 +1,12 @@
-import { Sora } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import ClientProvider from "../components/ClientProvider";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-const sora = Sora({
-  variable: "--font-sora",
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"]
 })
 
@@ -17,10 +19,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${sora.variable} antialiased`}
+        className={`${spaceGrotesk.variable} antialiased`}
       >
-       <Navbar/>
+        <Navbar />
         <ClientProvider>{children}</ClientProvider>
+        <Footer />
       </body>
     </html>
   );
