@@ -1,6 +1,9 @@
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import HtmlWrapper from "../components/HtmlWrapper";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -72,7 +75,13 @@ export async function generateMetadata() {
 export default function RootLayout({ children }) {
   return (
     <HtmlWrapper>
+      <GoogleAnalytics />
       <body className={`${spaceGrotesk.variable} antialiased`}>
+        <Navbar />
+        <main className="relative overflow-hidden">
+          {children}
+        </main>
+        <Footer />
         {children}
       </body>
     </HtmlWrapper>
