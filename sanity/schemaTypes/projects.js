@@ -128,21 +128,10 @@ export default {
       description: 'Order in which projects should be displayed (lower numbers appear first)',
       validation: Rule => Rule.integer().min(1)
     },
-    {
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      description: 'URL-friendly identifier for the project',
-      options: {
-        source: 'title',
-        maxLength: 96
-      },
-      validation: Rule => Rule.required()
-    }
   ],
   preview: {
     select: {
-      title: 'title',
+      title: 'title.en',
       subtitle: 'category.en',
       media: 'image'
     }

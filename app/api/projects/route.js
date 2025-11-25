@@ -17,8 +17,7 @@ export async function GET() {
         },
         links,
         featured,
-        order,
-        slug
+        order
       }
     `);
 
