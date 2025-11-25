@@ -2,6 +2,16 @@
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
+
+  // Experimental features for better performance
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion', '@react-three/fiber', '@react-three/drei'],
+    scrollRestoration: true,
+  },
+
+  // Turbopack configuration
+  turbopack: {},
+
   images: {
     remotePatterns: [
       {

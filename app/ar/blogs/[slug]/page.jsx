@@ -1,6 +1,15 @@
 import React from 'react';
 import { client } from '@/sanity/lib/client';
-import BlogDetails from '@/components/Blogs/BlogDetails';
+import dynamicImport from 'next/dynamic';
+
+const BlogDetails = dynamicImport(() => import('@/components/Blogs/BlogDetails'), {
+  loading: () => (
+    <section className="min-h-screen w-full bg-[#0a0a0a] text-white flex flex-col items-center justify-center px-4">
+      <div className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p className="text-cyan-400 font-mono">جاري تحميل المقالة...</p>
+    </section>
+  )
+});
 
 // Static params for all possible blog slugs
 export async function generateStaticParams() {

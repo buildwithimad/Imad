@@ -1,37 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-
-
-// Lenis smooth scroll hook
-const useLenis = () => {
-  useEffect(() => {
-    let lenis;
-    const initLenis = async () => {
-      try {
-        const Lenis = (await import('@studio-freight/lenis')).default;
-        lenis = new Lenis({
-          duration: 1.2,
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          smoothWheel: true,
-          wheelMultiplier: 1,
-        });
-
-        function raf(time) {
-          lenis.raf(time);
-          requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-      } catch (e) {
-        console.warn("Lenis not loaded", e);
-      }
-    };
-    initLenis();
-    return () => lenis?.destroy();
-  }, []);
-};
+import useLenis from '@/hooks/useLenis';
 
 export default function ZoomHeroSection() {
   useLenis();

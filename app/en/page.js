@@ -2,15 +2,44 @@ import React from 'react';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import Hero3D from '@/components/Home/Hero3D';
-import ZoomText from '@/components/Home/ZoomText';
-import About from '@/components/Home/About';
-import Projects from '@/components/Home/Projects';
-import Experience from '@/components/Home/Experience';
-import Testimonials from '@/components/Home/Testimonials';
-import Contact from '@/components/Home/Contact';
-import Skills from '@/components/Home/Skills';
-import Services from '@/components/Home/Services';
+import dynamicImport from 'next/dynamic';
+
+// Dynamically import heavy components to prevent render blocking
+const Hero3D = dynamicImport(() => import('@/components/Home/Hero3D'), {
+  loading: () => <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center"><div className="animate-pulse w-8 h-8 bg-cyan-400 rounded-full"></div></div>
+});
+
+const ZoomText = dynamicImport(() => import('@/components/Home/ZoomText'), {
+  loading: () => <div className="h-32 bg-[#0a0a0a]"></div>
+});
+
+const About = dynamicImport(() => import('@/components/Home/About'), {
+  loading: () => <div className="h-96 bg-[#0a0a0a]"></div>
+});
+
+const Projects = dynamicImport(() => import('@/components/Home/Projects'), {
+  loading: () => <div className="h-[100vh] bg-[#0a0a0a] flex items-center justify-center"><div className="animate-pulse text-cyan-400">Loading Projects...</div></div>
+});
+
+const Experience = dynamicImport(() => import('@/components/Home/Experience'), {
+  loading: () => <div className="h-[150vh] bg-[#0a0a0a]"></div>
+});
+
+const Testimonials = dynamicImport(() => import('@/components/Home/Testimonials'), {
+  loading: () => <div className="h-[80vh] bg-[#0a0a0a] flex items-center justify-center"><div className="animate-pulse text-cyan-400">Loading Testimonials...</div></div>
+});
+
+const Contact = dynamicImport(() => import('@/components/Home/Contact'), {
+  loading: () => <div className="h-96 bg-[#0a0a0a]"></div>
+});
+
+const Skills = dynamicImport(() => import('@/components/Home/Skills'), {
+  loading: () => <div className="h-[60vh] bg-[#0a0a0a]"></div>
+});
+
+const Services = dynamicImport(() => import('@/components/Home/Services'), {
+  loading: () => <div className="h-[150vh] bg-[#0a0a0a]"></div>
+});
 
 export async function generateMetadata() {
   const title = "Imad Hussain Khan | Full-Stack Web Developer";
