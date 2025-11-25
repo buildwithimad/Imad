@@ -5,7 +5,6 @@ export async function GET() {
     const projects = await client.fetch(`
       *[_type == "project"] | order(order asc) {
         _id,
-        id,
         title,
         category,
         year,

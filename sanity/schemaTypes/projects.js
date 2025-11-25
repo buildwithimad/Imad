@@ -4,18 +4,26 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'id',
-      title: 'Project ID',
-      type: 'string',
-      description: 'Unique identifier for the project (e.g., "01", "02")',
-      validation: Rule => Rule.required()
-    },
-    {
       name: 'title',
       title: 'Project Title',
-      type: 'string',
-      description: 'The main title of the project',
-      validation: Rule => Rule.required()
+      type: 'object',
+      description: 'Project title in both languages',
+      fields: [
+        {
+          name: 'en',
+          title: 'English',
+          type: 'string',
+          description: 'Title in English',
+          validation: Rule => Rule.required()
+        },
+        {
+          name: 'ar',
+          title: 'Arabic',
+          type: 'string',
+          description: 'Title in Arabic',
+          validation: Rule => Rule.required()
+        }
+      ]
     },
     {
       name: 'category',

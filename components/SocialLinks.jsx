@@ -13,6 +13,8 @@ const SOCIAL_LINKS = [
 ];
 
 export default function FixedSocialPanel({ isArabic = false }) {
+  
+
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   
   // Stagger variants for mobile reveal

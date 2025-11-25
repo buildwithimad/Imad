@@ -28,8 +28,7 @@ export default function Projects() {
           const fallbackProjects = [
             {
               _id: '1',
-              id: "01",
-              title: "CREATIVEMARK ERP",
+              title: { en: "CREATIVEMARK ERP", ar: "إي آر بي كرياتيف مارك" },
               category: { en: "Business System", ar: "نظام أعمال" },
               year: "2025",
               stack: ["Next.js", "Node.js", "MongoDB"],
@@ -38,12 +37,12 @@ export default function Projects() {
                 ar: "نظام تخطيط موارد المؤسسات متعدد الأدوار مع لوحات تحكم للمسؤول، العميل، الموظف، والشريك. سير عمل آلي للمدفوعات والتحقق، مما زاد الكفاءة بنسبة 35%."
               },
               image: { asset: { url: "https://images.unsplash.com/photo-1642427749670-f20e2e76ed8c?q=80&w=2080&auto=format&fit=crop" } },
-              links: { github: "#", live: "#" }
+              links: { github: "#", live: "#" },
+              order: 1
             },
             {
               _id: '2',
-              id: "02",
-              title: "SAAS DASHBOARD",
+              title: { en: "SAAS DASHBOARD", ar: "لوحة تحكم SaaS" },
               category: { en: "Analytics / SaaS", ar: "تحليلات / SaaS" },
               year: "2024",
               stack: ["React.js", "Next.js", "MongoDB"],
@@ -52,12 +51,12 @@ export default function Projects() {
                 ar: "لوحة تحكم تحليلية ببيانات في الوقت الفعلي، تقارير مخصصة، وتحكم في الوصول حسب الدور (RBAC). تحسين استجابة النظام بنسبة 30% باستخدام تقسيم الكود."
               },
               image: { asset: { url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" } },
-              links: { github: "#", live: "#" }
+              links: { github: "#", live: "#" },
+              order: 2
             },
             {
               _id: '3',
-              id: "03",
-              title: "CREATIVE DIGITAL CMS",
+              title: { en: "CREATIVE DIGITAL CMS", ar: "نظام إدارة المحتوى الرقمي الإبداعي" },
               category: { en: "CMS / Website", ar: "نظام إدارة محتوى / موقع" },
               year: "2024",
               stack: ["Next.js", "Sanity", "Tailwind"],
@@ -66,7 +65,8 @@ export default function Projects() {
                 ar: "موقع ويب حديث متحرك مع تكامل Sanity CMS. يتميز بإدارة محتوى ديناميكية ونقاط نهاية API مخصصة لتسليم البيانات بسرعة."
               },
               image: { asset: { url: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2700&auto=format&fit=crop" } },
-              links: { github: "#", live: "#" }
+              links: { github: "#", live: "#" },
+              order: 3
             }
           ];
           setProjects(fallbackProjects);
@@ -134,10 +134,10 @@ export default function Projects() {
                 <div className="flex items-baseline justify-between px-6 py-8 cursor-pointer relative z-10">
                   <div className="flex items-center gap-4">
                     <span className={`font-mono text-sm transition-colors ${activeProject?._id === project._id ? 'text-cyan-400' : 'text-gray-500'}`}>
-                      {project.id}
+                      {String(project.order).padStart(2, '0')}
                     </span>
                     <h4 className="text-2xl md:text-3xl font-black uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-300">
-                      {project.title}
+                      {project.title?.[isArabic ? 'ar' : 'en'] || project.title}
                     </h4>
                   </div>
                   <span className="hidden md:block font-mono text-xs text-gray-500">{project.year}</span>
@@ -214,7 +214,7 @@ export default function Projects() {
                   >
                     <Image
                       src={activeProject.image?.asset?.url || activeProject.image}
-                      alt={activeProject.title}
+                      alt={activeProject.title?.[isArabic ? 'ar' : 'en'] || activeProject.title}
                       width={800}
                       height={600}
                       className="w-full h-auto"
