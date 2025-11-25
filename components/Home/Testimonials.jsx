@@ -120,7 +120,8 @@ export default function Testimonials() {
                                 animate={{ opacity: 1, scale: 1, filter: "grayscale(0%)" }}
                                 exit={{ opacity: 0, scale: 1.05, filter: "grayscale(100%)" }}
                                 transition={{ duration: 0.5, ease: "circOut" }}
-                                className="relative aspect-[4/5] w-full border border-white/20 bg-white/5 p-2"
+                                className="relative w-full border border-white/20 bg-white/5 p-2"
+                                style={{ aspectRatio: '4 / 5' }}
                             >
                                 {/* Tech Corners */}
                                 <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 -mt-px -ml-px z-20"></div>
@@ -131,10 +132,9 @@ export default function Testimonials() {
                                     <Image
                                         src={testimonials[currentIndex].image}
                                         alt={testimonials[currentIndex].client}
-                                        width={400}
-                                        height={500}
-                                        className="w-full h-full object-cover opacity-90"
-                                        sizes="(max-width: 1024px) 100vw, 40vw"
+                                        fill
+                                        className="object-cover opacity-90"
+                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                         priority={currentIndex === 0}
                                         placeholder="blur"
                                         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+IRjWjBqO6O2mhP//Z"

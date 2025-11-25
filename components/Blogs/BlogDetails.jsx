@@ -196,13 +196,14 @@ const BlogDetails = ({ blog, relatedBlogs = [], language, slug }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="w-full max-w-4xl mx-auto relative z-10 border-4 border-cyan-400/20"
+              style={{ aspectRatio: '2 / 1', maxHeight: '500px' }}
             >
               <Image
                 src={blog.images?.[0]?.asset?.url || blog.images?.[0]}
                 alt={blog.title?.[isArabic ? 'ar' : 'en'] || 'Blog featured image'}
-                width={1200}
-                height={600}
-                className="w-full h-auto max-h-[500px] object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 75vw"
                 priority
               />
             </motion.div>

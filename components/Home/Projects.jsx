@@ -193,9 +193,9 @@ export default function Projects() {
         {/* RIGHT COLUMN: Visual Preview - Sticky */}
         <div className="hidden lg:flex flex-col justify-center h-[80vh] sticky top-20 pl-12">
 
-          {/* Image Container */}
+          {/* Image Container - Responsive Design */}
           {activeProject && (
-            <div className="relative w-full aspect-[4/3] border border-white/20 p-2 bg-white/5">
+            <div className="relative w-full border border-white/20 p-2 bg-white/5" style={{ aspectRatio: '4 / 3' }}>
               {/* Tech Corner Markers (CSS only, no heavy renders) */}
               <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400 -mt-1 -ml-1 z-20"></div>
               <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400 -mt-1 -mr-1 z-20"></div>
@@ -215,10 +215,9 @@ export default function Projects() {
                     <Image
                       src={activeProject.image?.asset?.url || activeProject.image}
                       alt={activeProject.title}
-                      width={800}
-                      height={600}
-                      className="w-full h-full object-cover"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 50vw"
                       priority={activeProject._id === projects[0]?._id}
                       placeholder="blur"
                       blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+IRjWjBqO6O2mhP//Z"

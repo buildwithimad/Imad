@@ -73,9 +73,9 @@ function BlogCard({ blog, index }) {
             <Image
               src={blog.images[0].asset.url}
               alt={blog.title?.[isArabic ? 'ar' : 'en'] || 'Blog thumbnail'}
-              width={400}
-              height={200}
-              className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-[1.03] transition-transform duration-500"
+              fill
+              className="object-cover opacity-70 group-hover:opacity-100 group-hover:scale-[1.03] transition-transform duration-500"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
             {/* Asset ID Overlay */}
             <div className="absolute bottom-0 right-0 bg-black/70 p-2 text-xs font-mono text-cyan-400 border-t border-l border-white/20">
