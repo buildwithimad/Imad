@@ -29,6 +29,7 @@ function BlogCard({ blog, index }) {
   const pathname = usePathname();
   const isArabic = pathname?.startsWith("/ar");
 
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', {
       year: 'numeric', month: 'short', day: 'numeric'

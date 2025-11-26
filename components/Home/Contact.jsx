@@ -48,10 +48,10 @@ export default function Contact() {
     };
 
     const socialLinks = [
-        { name: "GITHUB", url: "#", id: "SYS_01" },
-        { name: "LINKEDIN", url: "#", id: "NET_02" },
-        { name: "TWITTER", url: "#", id: "COM_03" },
-        { name: "INSTAGRAM", url: "#", id: "IMG_04" }
+        { name: "GITHUB", url: "https://github.com/ImaadDev", id: "SYS_01" },
+        { name: "LINKEDIN", url: "https://www.linkedin.com/in/imad-hussain-khan-76388b305", id: "NET_02" },
+        { name: "FACEBOOK", url: "https://www.facebook.com/imad.hussain.khan.2025", id: "COM_03" },
+        { name: "INSTAGRAM", url: "https://www.instagram.com/imaddeveloper?igsh=bXJ4MXB4bmo2djAy", id: "IMG_04" }
     ];
 
     return (
