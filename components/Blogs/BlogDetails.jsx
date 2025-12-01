@@ -106,6 +106,7 @@ const BlogDetails = ({ blog, relatedBlogs = [], language, slug }) => {
   const shareTitle = blog?.title?.[isArabic ? 'ar' : 'en'] || '';
   const shareText = blog?.description?.[isArabic ? 'ar' : 'en'] || '';
   const shareImage = blog?.images?.[0]?.asset?.url || blog?.images?.[0] || '';
+  const contentImages = blog?.images?.slice(1) || []; // reserve first image for hero, rest get sprinkled through sections
 
   console.log('Share Image URL:', shareImage);
 
@@ -223,18 +224,18 @@ const BlogDetails = ({ blog, relatedBlogs = [], language, slug }) => {
         </div>
 
         {/* Featured Image */}
-        {blog.images[0] && (
+        {blog.images?.[0] && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="w-full max-w-4xl mx-auto relative z-10 border-4 border-cyan-400/20"
+              className="w-full max-w-4xl lg:max-w-3xl mx-auto relative z-10 border-4 border-cyan-400/20"
             >
               <Image
                 src={blog.images?.[0]?.asset?.url || blog.images?.[0]}
                 alt={blog.title?.[isArabic ? 'ar' : 'en'] || 'Blog featured image'}
-                width={blog.images[0].asset?.metadata?.dimensions?.width || 800}
-                height={blog.images[0].asset?.metadata?.dimensions?.height || 400}
+                width={blog.images?.[0]?.asset?.metadata?.dimensions?.width || 800}
+                height={blog.images?.[0]?.asset?.metadata?.dimensions?.height || 400}
                 className="w-full h-auto"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 75vw"
                 priority
@@ -257,30 +258,58 @@ const BlogDetails = ({ blog, relatedBlogs = [], language, slug }) => {
 
           {/* Article Content Blocks */}
           <div className="mb-16">
-            {blog.sections?.map((section, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                viewport={{ once: true, amount: 0.2 }}
-                className="mb-12 p-6 bg-black/50 border border-zinc-800"
-              >
-                <h2 className="text-2xl sm:text-3xl font-black text-cyan-400 mb-6 flex items-center gap-3">
-                  <Hash size={24} />
-                  {section.title?.[isArabic ? 'ar' : 'en']}
-                </h2>
-                <div className="prose prose-lg prose-invert max-w-none">
-                  <div className="text-gray-300 leading-relaxed text-base sm:text-lg font-mono" style={{ direction: isArabic ? 'rtl' : 'ltr' }}>
-                    {section.content?.[isArabic ? 'ar' : 'en']?.split('\n\n').map((paragraph, pIndex) => (
-                      <p key={pIndex} className="mb-4">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            {blog.sections?.map((section, index) => {
+              const imageIndex = Math.floor((index + 1) / 2) - 1; // after every 2 sections
+              const sectionImage = imageIndex >= 0 ? contentImages?.[imageIndex] : null;
+
+              return (
+                <React.Fragment key={index}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    className="mb-12 p-6 bg-black/50 border border-zinc-800"
+                  >
+                    <h2 className="text-2xl sm:text-3xl font-black text-cyan-400 mb-6 flex items-center gap-3">
+                      <Hash size={24} />
+                      {section.title?.[isArabic ? 'ar' : 'en']}
+                    </h2>
+                    <div className="prose prose-lg prose-invert max-w-none">
+                      <div className="text-gray-300 leading-relaxed text-base sm:text-lg font-mono" style={{ direction: isArabic ? 'rtl' : 'ltr' }}>
+                        {section.content?.[isArabic ? 'ar' : 'en']?.split('\n\n').map((paragraph, pIndex) => (
+                          <p key={pIndex} className="mb-4">
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Drop in the next gallery image after every 2 sections, if available */}
+                  {((index + 1) % 2 === 0) && sectionImage && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      className="mb-12 w-full max-w-4xl lg:max-w-3xl mx-auto"
+                    >
+                      <div className="border-4 border-cyan-400/30">
+                        <Image
+                          src={sectionImage?.asset?.url || sectionImage}
+                          alt={`${blog.title?.[isArabic ? 'ar' : 'en'] || 'Blog image'} - ${index + 1}`}
+                          width={sectionImage?.asset?.metadata?.dimensions?.width || 1200}
+                          height={sectionImage?.asset?.metadata?.dimensions?.height || 675}
+                          className="w-full h-auto"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 75vw"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </React.Fragment>
+              );
+            })}
 
             {/* Fallback content if no sections */}
             {!blog.sections?.length && (
