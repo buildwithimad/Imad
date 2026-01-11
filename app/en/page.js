@@ -5,13 +5,16 @@ export const revalidate = 0;
 import dynamicImport from 'next/dynamic';
 
 // Dynamically import heavy components to prevent render blocking
-const Hero3D = dynamicImport(() => import('@/components/Home/Hero3D'), {
-  loading: () => <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center"><div className="animate-pulse w-8 h-8 bg-cyan-400 rounded-full"></div></div>
-});
+
 
 const ZoomText = dynamicImport(() => import('@/components/Home/ZoomText'), {
   loading: () => <div className="h-32 bg-[#0a0a0a]"></div>
 });
+
+const Hero3D = dynamicImport(() => import('@/components/Home/Hero3D'), {
+  loading: () => <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center"><div className="animate-pulse w-8 h-8 bg-cyan-400 rounded-full"></div></div>
+});
+
 
 const About = dynamicImport(() => import('@/components/Home/About'), {
   loading: () => <div className="h-96 bg-[#0a0a0a]"></div>
@@ -189,15 +192,21 @@ const Page = () => (
         }
       ]) }}
     />
-    <Hero3D />
-    <ZoomText />
-    <About />
-    <Skills />
-    <Experience />
-    <Projects />
-    <Testimonials />
-    <Services />
-    <Contact />
+      <ZoomText />
+<Hero3D />
+<About />
+<Skills />
+<Experience />
+<Projects />
+
+{/* PINNED SECTION */}
+<Services />
+
+{/* SCROLLS OVER SERVICES */}
+<Testimonials />
+
+<Contact />
+
   </>
 );
 

@@ -48,29 +48,16 @@ export default function Contact() {
     };
 
     const socialLinks = [
-        { name: "GITHUB", url: "https://github.com/ImaadDev", id: "SYS_01" },
-        { name: "LINKEDIN", url: "https://www.linkedin.com/in/imad-hussain-khan-76388b305", id: "NET_02" },
-        { name: "FACEBOOK", url: "https://www.facebook.com/imad.hussain.khan.2025", id: "COM_03" },
-        { name: "INSTAGRAM", url: "https://www.instagram.com/imaddeveloper?igsh=bXJ4MXB4bmo2djAy", id: "IMG_04" }
+        { name: "GITHUB", url: "https://github.com/buildwithimad",},
+        { name: "LINKEDIN", url: "https://www.linkedin.com/in/imad-hussain-khan-76388b305", },
+        { name: "FACEBOOK", url: "https://www.facebook.com/imad.hussain.khan.2025",},
+        { name: "INSTAGRAM", url: "https://www.instagram.com/imaddeveloper?igsh=bXJ4MXB4bmo2djAy", }
     ];
 
     return (
         <section className="min-h-screen bg-[#050505] text-white pt-20 pb-20 relative flex flex-col" id="contact">
             
-            {/* 1. Section Header / Status Bar */}
-            <div className="border-y border-zinc-800 bg-[#050505] relative z-10">
-                <div className="max-w-[1800px] mx-auto px-4 md:px-8 py-6 flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                        <div className="w-3 h-3 bg-cyan-500 animate-pulse"></div>
-                        <span className="font-mono text-xs tracking-widest text-zinc-500">
-                            {isArabic ? "النظام جاهز" : "SYSTEM_ONLINE // READY_TO_CONNECT"}
-                        </span>
-                    </div>
-                    <span className="font-mono text-xs text-zinc-600 hidden md:block">
-                        SECURE_CHANNEL_V.2.0
-                    </span>
-                </div>
-            </div>
+       
 
             <div className="max-w-[1800px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 border-b border-zinc-800 min-h-[80vh]">
                 
@@ -98,7 +85,7 @@ export default function Contact() {
                         {/* Email Block */}
                         <div>
                             <div className="font-mono text-[10px] text-cyan-500 mb-2 tracking-widest">
-                                {isArabic ? "البريد الإلكتروني" : "TARGET_ADDRESS"}
+                                {isArabic ? "البريد الإلكتروني" : "TARGET ADDRESS"}
                             </div>
                             <div 
                                 onClick={handleCopy}
@@ -146,7 +133,7 @@ export default function Contact() {
                                     exit={{ height: 0, opacity: 0 }}
                                     className={`px-8 py-4 font-mono text-xs uppercase border-b border-zinc-800 ${successMessage ? 'bg-green-900/20 text-green-400' : 'bg-red-900/20 text-red-400'}`}
                                 >
-                                    <span className="mr-4">STATUS_UPDATE:</span>
+                                    <span className="mr-4">STATUS UPDATE:</span>
                                     {successMessage || errorMessage}
                                 </motion.div>
                             )}
@@ -156,7 +143,7 @@ export default function Contact() {
                         <div className={`flex-1 border-b border-zinc-800 transition-colors duration-500 ${focusedField === 'name' ? 'bg-[#0a0a0a]' : ''}`}>
                             <div className="p-8 md:p-12 h-full flex flex-col justify-center relative group">
                                 <label className={`font-mono text-xs uppercase mb-4 block transition-colors ${focusedField === 'name' ? 'text-cyan-400' : 'text-zinc-500'}`}>
-                                    01 // {isArabic ? "الاسم" : "IDENTITY"}
+                                    {isArabic ? "اسم" : "NAME"}
                                 </label>
                                 <input
                                     type="text"
@@ -165,7 +152,7 @@ export default function Contact() {
                                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                                     onFocus={() => setFocusedField('name')}
                                     onBlur={() => setFocusedField(null)}
-                                    placeholder={isArabic ? "اسمك الكامل..." : "ENTER_FULL_NAME_"}
+                                    placeholder={isArabic ? "اسمك الكامل..." : "ENTER FULL NAME"}
                                     className="w-full bg-transparent text-2xl md:text-4xl font-bold placeholder-zinc-800 text-white outline-none"
                                 />
                                 {/* Active Indicator Line */}
@@ -177,7 +164,7 @@ export default function Contact() {
                         <div className={`flex-1 border-b border-zinc-800 transition-colors duration-500 ${focusedField === 'email' ? 'bg-[#0a0a0a]' : ''}`}>
                             <div className="p-8 md:p-12 h-full flex flex-col justify-center relative group">
                                 <label className={`font-mono text-xs uppercase mb-4 block transition-colors ${focusedField === 'email' ? 'text-cyan-400' : 'text-zinc-500'}`}>
-                                    02 // {isArabic ? "البريد الإلكتروني" : "COORDINATES"}
+                                    {isArabic ? " بريد إلكتروني" : "EMAIL"}
                                 </label>
                                 <input
                                     type="email"
@@ -186,7 +173,7 @@ export default function Contact() {
                                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                                     onFocus={() => setFocusedField('email')}
                                     onBlur={() => setFocusedField(null)}
-                                    placeholder={isArabic ? "بريدك الإلكتروني..." : "ENTER_EMAIL_ADDRESS_"}
+                                    placeholder={isArabic ? "بريدك الإلكتروني..." : "ENTER EMAIL ADDRESS"}
                                     className="w-full bg-transparent text-2xl md:text-4xl font-bold placeholder-zinc-800 text-white outline-none"
                                 />
                                 <div className={`absolute bottom-0 left-0 h-[2px] bg-cyan-400 transition-all duration-300 ${focusedField === 'email' ? 'w-full' : 'w-0'}`}></div>
@@ -197,7 +184,7 @@ export default function Contact() {
                         <div className={`flex-[1.5] border-b border-zinc-800 transition-colors duration-500 ${focusedField === 'message' ? 'bg-[#0a0a0a]' : ''}`}>
                             <div className="p-8 md:p-12 h-full flex flex-col relative group">
                                 <label className={`font-mono text-xs uppercase mb-4 block transition-colors ${focusedField === 'message' ? 'text-cyan-400' : 'text-zinc-500'}`}>
-                                    03 // {isArabic ? "الرسالة" : "TRANSMISSION_DATA"}
+                                    {isArabic ? "رسالة" : "MESSAGE"}
                                 </label>
                                 <textarea
                                     required
@@ -205,7 +192,7 @@ export default function Contact() {
                                     onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                                     onFocus={() => setFocusedField('message')}
                                     onBlur={() => setFocusedField(null)}
-                                    placeholder={isArabic ? "أكتب رسالتك هنا..." : "INPUT_MESSAGE_CONTENT..."}
+                                    placeholder={isArabic ? "أكتب رسالتك هنا..." : "INPUT MESSAGE CONTENT"}
                                     className="w-full h-full bg-transparent text-xl md:text-2xl font-medium placeholder-zinc-800 text-white outline-none resize-none leading-relaxed"
                                 />
                                 <div className={`absolute bottom-0 left-0 h-[2px] bg-cyan-400 transition-all duration-300 ${focusedField === 'message' ? 'w-full' : 'w-0'}`}></div>
@@ -219,8 +206,8 @@ export default function Contact() {
                             className="py-8 md:py-10 bg-white text-black font-black text-xl tracking-widest hover:bg-cyan-400 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoading 
-                                ? (isArabic ? "جاري المعالجة..." : "PROCESSING_REQUEST...") 
-                                : (isArabic ? "إرسال" : "INITIALIZE_SEND")}
+                                ? (isArabic ? "جاري المعالجة..." : "PROCESSING REQUEST") 
+                                : (isArabic ? "إرسال" : "SEND")}
                         </button>
                     </form>
                 </div>

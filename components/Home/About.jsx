@@ -1,306 +1,83 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePathname } from 'next/navigation';
+import TextSplit from '../Ui/TextSplit';
 
-// Animation Variants
-const slideIn = {
-  initial: { x: -20, opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-  exit: { x: 20, opacity: 0 },
-  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
-};
+gsap.registerPlugin(ScrollTrigger);
 
-const reveal = {
-  initial: { scaleY: 0 },
-  animate: { scaleY: 1 },
-  transition: { duration: 0.5, ease: "circOut" }
-};
-
-function AnimatedSection({ children, delay = 0 }) {
-  const [ref, inView] = useInView({ threshold: 0.2, triggerOnce: true });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-export default function About() {
-  const [currentSection, setCurrentSection] = useState(0);
+export default function AboutSection() {
+  const ref = useRef(null);
   const pathname = usePathname();
-  const isArabic = pathname?.startsWith("/ar");
+  const isArabic = pathname?.startsWith('/ar');
 
-  const sections = [
-    {
-      id: "01",
-      title: isArabic ? "الهوية" : "IDENTITY",
-      subtitle: isArabic ? "مطور واجهات متكامل" : "Full Stack Developer",
-      content: isArabic
-        ? "متخصص في MERN & Next.js، أقوم ببناء تطبيقات ويب قابلة للتوسع، لوحات تحكم SaaS، وأنظمة سير العمل التجارية. أركز على تقديم كود نظيف وقابل للصيانة وقيمة تجارية حقيقية."
-        : "Specializing in MERN & Next.js, I build scalable web applications, SaaS dashboards, and business workflow systems. Focused on delivering clean, maintainable code and real business value.",
-      color: "text-cyan-400"
-    },
-    {
-      id: "02",
-      title: isArabic ? "التقنيات" : "STACK",
-      subtitle: isArabic ? "الترسانة التقنية" : "The Arsenal",
-      content: isArabic
-        ? "React.js, Next.js, Node.js, Express, MongoDB, PostgreSQL. أستفيد من الأدوات الحديثة مثل Docker و AWS لهندسة أنظمة بيئية عالية الأداء وقابلة للتوسع."
-        : "React.js, Next.js, Node.js, Express, MongoDB, PostgreSQL. I leverage modern tools like Docker and AWS to engineer performant ecosystems that scale.",
-      color: "text-purple-400"
-    },
-    {
-      id: "03",
-      title: isArabic ? "الفلسفة" : "PHILOSOPHY",
-      subtitle: isArabic ? "الأداء والأمان" : "Performance & Security",
-      content: isArabic
-        ? "ماهر في تطوير واجهات برمجة التطبيقات (API)، المصادقة، والتحسين. أؤمن بالبنية القوية حيث يسير الأمان (JWT, RBAC) والسرعة جنباً إلى جنب."
-        : "Skilled in API development, authentication, and optimization. I believe in robust architecture where security (JWT, RBAC) and speed go hand in hand.",
-      color: "text-emerald-400"
-    },
-    {
-      id: "04",
-      title: isArabic ? "تواصل" : "CONTACT",
-      subtitle: isArabic ? "بدء البروتوكول" : "Initiate Protocol",
-      content: isArabic
-        ? "هل لديك مشكلة معقدة؟ أنا أبني حلولاً أنيقة. دعنا نوحد جهودنا ونبني مستقبل الويب."
-        : "Have a complex problem? I build elegant solutions. Let's align our grids and build the future of the web.",
-      color: "text-orange-400"
-    }
-  ];
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.about-fade',
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: 'power3.out',
+          stagger: 0.15,
+          scrollTrigger: {
+            trigger: ref.current,
+            start: 'top 75%',
+          },
+        }
+      );
+    }, ref);
 
-  // Auto-rotate sections
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSection((prev) => (prev + 1) % sections.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [sections.length]);
+    return () => ctx.revert();
+  }, []);
+
+  const content = {
+    headline: isArabic
+      ? 'نصمم ونبني تجارب رقمية عالية الأداء.'
+      : 'I design & build high-performance digital experiences.',
+    body: isArabic
+      ? 'نعمل عند تقاطع التصميم والتقنية، مع تركيز قوي على الأداء، الوضوح، وتجربة المستخدم. نبني منتجات رقمية تدوم.'
+      : 'I operate at the intersection of design and technology, with a strong focus on performance, clarity, and user experience. I build digital products meant to last.',
+  };
 
   return (
-    <section id="about" className="min-h-screen w-full bg-[#0a0a0a] text-white flex flex-col items-center justify-center relative px-4 py-20 selection:bg-white selection:text-black">
+    <section
+      ref={ref}
+      className="relative py-40 bg-black text-white"
+    >
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
+        
+        {/* TEXT */}
+        <div className="md:col-span-7">
+          <TextSplit
+          text='About'
+          className="about-fade font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase mb-8">
+          </TextSplit>
 
-      {/* Background Grid Pattern - Pure CSS */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
-        style={{ backgroundImage: 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
-      </div>
-
-      <div className="w-full max-w-6xl mx-auto relative z-10">
-
-        {/* Header Section with decorative lines */}
-        <div className="mb-12 md:mb-16 border-b border-white/20 pb-6 md:pb-8 flex flex-col md:flex-row justify-between items-end">
-          <motion.div
-            initial={{ opacity: 0, x: -60, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{
-              duration: 1.0,
-              ease: [0.25, 0.46, 0.45, 0.94],
-              delay: 0.2
-            }}
-          >
-            <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl font-black tracking-tighter leading-none">
-              {isArabic ? "عني" : "ABOUT"}
-            </h2>
-            <motion.h2
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl font-black tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-600"
-              initial={{ opacity: 0, x: 60 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                duration: 0.8,
-                ease: [0.25, 0.46, 0.45, 0.94],
-                delay: 0.6
-              }}
+          <TextSplit className="about-fade text-[clamp(2.8rem,5vw,4.8rem)] font-light leading-[1.05] tracking-tight mb-8"
+            text={content.headline}
             >
-              {isArabic ? "نفسي." : "MYSELF."}
-            </motion.h2>
-          </motion.div>
+          </TextSplit>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.6,
-              ease: [0.25, 0.46, 0.45, 0.94],
-              delay: 0.8
-            }}
-            className="text-right mt-4 md:mt-0"
-          >
-            <p className="font-mono text-xs sm:text-sm text-gray-400">{isArabic ? "حالة النظام: متصل" : "SYSTEM STATUS: ONLINE"}</p>
-            <p className="font-mono text-xs sm:text-sm text-gray-400">{isArabic ? "الموقع: عالمي" : "LOCATION: WORLDWIDE"}</p>
-          </motion.div>
+          <p className="about-fade text-lg text-neutral-400 max-w-xl leading-relaxed">
+            {content.body}
+          </p>
         </div>
 
-        {/* Main Grid Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 border border-white/20 bg-black/50">
-
-          {/* Left Column: Dynamic Content */}
-          <div className="lg:col-span-7 p-6 sm:p-8 md:p-12 border-b lg:border-b-0 lg:border-r border-white/20 relative min-h-[350px] sm:min-h-[400px] flex flex-col justify-between">
-            <AnimatePresence mode='wait'>
-              <motion.div
-                key={currentSection}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -30, scale: 0.95 }}
-                transition={{
-                  duration: 0.6,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                className="space-y-6"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                  <span className={`font-mono text-lg sm:text-xl ${sections[currentSection].color}`}>
-                    // {sections[currentSection].id}
-                  </span>
-                  <span className="font-bold tracking-widest uppercase text-xs sm:text-sm border px-2 py-1 border-white/30 w-fit">
-                    {sections[currentSection].title}
-                  </span>
-                </div>
-
-                <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
-                  {sections[currentSection].subtitle}
-                </h3>
-
-                <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-xl leading-relaxed">
-                  {sections[currentSection].content}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Square Pagination */}
-            <div className="flex space-x-0 mt-12">
-              {sections.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSection(index)}
-                  className={`h-2 flex-1 transition-all duration-300 ${index === currentSection ? 'bg-white' : 'bg-white/10 hover:bg-white/30'
-                    }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Right Column: Stats & Skills */}
-          <div className="lg:col-span-5 flex flex-col">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2">
-              {[
-                { label: isArabic ? "مشاريع" : "PROJECTS", value: "10+" },
-                { label: isArabic ? "سنوات خبرة" : "EXP YRS", value: "05+" },
-                { label: isArabic ? "عملاء" : "CLIENTS", value: "1K+" },
-                { label: isArabic ? "التزامات" : "COMMITS", value: "2k+" }
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  className="p-4 sm:p-6 md:p-8 border-b border-r border-white/20 last:border-r-0 even:border-r-0 hover:bg-white/5 transition-colors duration-300"
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.1,
-                    ease: [0.25, 0.46, 0.45, 0.94]
-                  }}
-                  viewport={{ once: true }}
-                >
-                  <h4 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">{stat.value}</h4>
-                  <p className="font-mono text-xs text-gray-500 uppercase tracking-wider">{stat.label}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Technical Proficiency */}
-            <div className="p-4 sm:p-6 md:p-8 flex-1 flex flex-col justify-center space-y-4 sm:space-y-6">
-              <h4 className="font-mono text-xs sm:text-sm text-gray-500 uppercase mb-3 sm:mb-4 border-b border-white/10 pb-2">
-                {isArabic ? "المهارات الأساسية" : "Core Competencies"}
-              </h4>
-              {[
-                { skill: "React / Next.js", level: 95 },
-                { skill: "Node.js / Backend", level: 90 },
-                { skill: "DevOps / Docker", level: 85 }
-              ].map((item, index) => (
-                <div key={item.skill} className="group">
-                  <div className="flex justify-between text-xs sm:text-sm mb-2 font-medium">
-                    <span className="truncate mr-2">{item.skill}</span>
-                    <span className="font-mono text-gray-400 flex-shrink-0">{item.level}%</span>
-                  </div>
-                  <div className="w-full h-3 sm:h-4 bg-white/10 relative overflow-hidden rounded-sm">
-                    <motion.div
-                      className="absolute top-0 left-0 h-full bg-white group-hover:bg-cyan-400 transition-colors duration-300 rounded-sm"
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${item.level}%` }}
-                      transition={{ duration: 1, delay: 0.5 + (index * 0.1), ease: "circOut" }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+        {/* IMAGE */}
+        <div className="md:col-span-5">
+          <div className="about-fade aspect-[3/4] w-full overflow-hidden">
+            <img
+              src="/imad1.jpeg"
+              alt="Studio portrait"
+              className="w-full h-full object-cover opacity-85"
+            />
           </div>
         </div>
-
-        {/* Call to Action Bar */}
-        <motion.div
-          className="mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center border-t border-white/20 pt-8 sm:pt-12"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.8,
-            ease: [0.25, 0.46, 0.45, 0.94],
-            delay: 0.2
-          }}
-          viewport={{ once: true }}
-        >
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{
-              duration: 0.6,
-              ease: [0.25, 0.46, 0.45, 0.94],
-              delay: 0.4
-            }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-xl sm:text-2xl font-bold uppercase tracking-tight">
-              {isArabic ? "ابدأ تعاوناً" : "Start a Collaboration"}
-            </h3>
-            <p className="text-gray-400 mt-2 text-sm sm:text-base">
-              {isArabic ? "متاح للعمل الحر والتعاقد." : "Available for freelance and contract work."}
-            </p>
-          </motion.div>
-          <motion.div
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-start md:justify-end"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{
-              duration: 0.6,
-              ease: [0.25, 0.46, 0.45, 0.94],
-              delay: 0.6
-            }}
-            viewport={{ once: true }}
-          >
-            <motion.button
-              whileHover={{ scale: 1.02, backgroundColor: "#fff", color: "#000" }}
-              whileTap={{ scale: 0.98 }}
-              className="px-6 sm:px-8 py-3 sm:py-4 bg-transparent border border-white text-white font-bold uppercase tracking-wider transition-colors text-sm sm:text-base"
-            >
-              {isArabic ? "تواصل معي" : "Contact Me"}
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02, backgroundColor: "#222" }}
-              whileTap={{ scale: 0.98 }}
-              className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-black font-bold uppercase tracking-wider border border-white text-sm sm:text-base"
-            >
-              {isArabic ? "شاهد أعمالي" : "View Works"}
-            </motion.button>
-          </motion.div>
-        </motion.div>
 
       </div>
     </section>

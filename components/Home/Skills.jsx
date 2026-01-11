@@ -1,121 +1,179 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import {
-    Cpu, Server, Database, Container, LayoutGrid,
-    Lock, Cloud, Aperture, Smartphone, IterationCcw,
-    Layers, Code, Shield, Globe, Terminal, Zap
-} from 'lucide-react';
+import { useLayoutEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePathname } from 'next/navigation';
 
-// Split skills into two logical rows for visual balance
-const ROW_1 = [
-    { name: "NEXT.JS", category: "FRAMEWORK", Icon: Cpu, color: "text-white" },
-    { name: "REACT.JS", category: "LIBRARY", Icon: Code, color: "text-cyan-400" },
-    { name: "TAILWIND", category: "STYLING", Icon: LayoutGrid, color: "text-teal-400" },
-    { name: "TYPESCRIPT", category: "LANGUAGE", Icon: Terminal, color: "text-blue-400" },
-    { name: "REACT NATIVE", category: "MOBILE", Icon: Smartphone, color: "text-purple-400" },
-    { name: "FRAMER", category: "ANIMATION", Icon: Zap, color: "text-yellow-400" },
-];
+gsap.registerPlugin(ScrollTrigger);
 
-const ROW_2 = [
-    { name: "NODE.JS", category: "RUNTIME", Icon: Server, color: "text-green-500" },
-    { name: "MONGODB", category: "DATABASE", Icon: Database, color: "text-green-400" },
-    { name: "DOCKER", category: "DEVOPS", Icon: Container, color: "text-blue-500" },
-    { name: "AWS", category: "CLOUD", Icon: Cloud, color: "text-orange-400" },
-    { name: "SECURITY", category: "AUTH", Icon: Lock, color: "text-red-400" },
-    { name: "CI/CD", category: "PIPELINE", Icon: IterationCcw, color: "text-indigo-400" },
-];
+// --- DATA ---
+const ROW_1 = ['Next.js', 'React', 'TypeScript', 'Tailwind', 'GSAP', 'React Native', 'Framer'];
+const ROW_2 = ['Node.js', 'MongoDB', 'Docker', 'AWS', 'System Architecture', 'Cybersecurity'];
 
-const SkillCard = ({ skill }) => (
-    <div className="group relative mx-4">
-        
-        {/* Card Content: Smoother hover background, sharp corners, simplified transition */}
-        <div className="relative flex items-center gap-6 px-8 py-6 bg-white/5 border border-white/10 group-hover:bg-cyan-900/10 group-hover:border-cyan-400/50 transition duration-200 min-w-[280px]">
-
-            {/* Icon Container: Subtle scale effect for less lag */}
-            <div className={`p-3 bg-white/5 border border-white/10 group-hover:scale-[1.05] transition-transform duration-200 ${skill.color}`}>
-                <skill.Icon size={40} strokeWidth={1.5} />
-            </div>
-
-            {/* Text Info */}
-            <div className="flex flex-col">
-                <span className="text-xl font-bold tracking-tight text-white group-hover:text-cyan-400 transition-colors duration-200">
-                    {skill.name}
-                </span>
-                <span className="text-xs font-mono text-gray-500 tracking-widest uppercase">
-                    {skill.category}
-                </span>
-            </div>
-
-            {/* Decorative Corner: Subtle point, no heavy shadow */}
-            <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-2 h-2 bg-cyan-400" />
-            </div>
-        </div>
+// --- ITEM COMPONENT (Handles Hover Effect) ---
+const SkillItem = ({ text }) => {
+  return (
+    <div className="group relative flex items-center px-8 md:px-12 py-4">
+      {/* 1. Outlined Text (Default) */}
+      <span className="relative z-10 text-[clamp(4rem,9vw,8rem)] font-black leading-[0.8] tracking-tighter text-transparent transition-colors duration-500 group-hover:text-white"
+            style={{ WebkitTextStroke: '1px rgba(255,255,255,0.25)' }}>
+        {text}
+      </span>
+      
+      {/* 2. Glow Effect on Hover */}
+      <div className="absolute inset-0 bg-cyan-500/0 blur-xl group-hover:bg-cyan-500/20 transition-colors duration-500" />
+      
+      {/* 3. Separator */}
+      <span className="absolute right-0 top-1/2 -translate-y-1/2 text-2xl text-white/20">
+        /
+      </span>
     </div>
-);
-
-const MarqueeRow = ({ items, direction = "left", speed = 50 }) => {
-    return (
-        <div className="flex overflow-hidden whitespace-nowrap py-4 mask-linear-fade" style={{ direction: 'ltr' }}>
-            <motion.div
-                className="flex"
-                animate={{
-                    // Framer Motion handles translation using performant CSS properties (translate3d)
-                    x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"]
-                }}
-                transition={{
-                    duration: speed,
-                    ease: "linear",
-                    repeat: Infinity,
-                }}
-            >
-                {/* Two repetitions ensure a seamless loop */}
-                {[...items, ...items].map((skill, idx) => (
-                    <SkillCard key={`${skill.name}-${idx}`} skill={skill} />
-                ))}
-            </motion.div>
-        </div>
-    );
+  );
 };
 
-export default function Skills() {
-    const pathname = usePathname();
-    const isArabic = pathname?.startsWith("/ar");
+// --- MARQUEE ROW COMPONENT ---
+function MarqueeRow({ items, direction = 1, speed = 20, tilt = 0 }) {
+  const trackRef = useRef(null);
+  const containerRef = useRef(null);
+  const timelineRef = useRef(null);
 
-    return (
-        <section className="min-h-[60vh] bg-[#050505] py-24 relative overflow-hidden flex flex-col justify-center">
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const el = trackRef.current;
+      
+      // 1. Infinite Scroll Animation
+      // We calculate exact width to ensure seamless loop
+      const width = el.scrollWidth / 2; // Divided by 2 because list is duplicated
+      
+      // Set initial position based on direction to prevent jump
+      if (direction === 1) {
+          gsap.set(el, { x: -width });
+      }
 
-            {/* Background Elements: Reduced light for performance */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.01),transparent_70%)]" />
+      timelineRef.current = gsap.to(el, {
+        x: direction === -1 ? -width : 0,
+        duration: speed,
+        ease: 'none',
+        repeat: -1,
+      });
 
-            {/* Header */}
-            <div className="max-w-7xl mx-auto px-6 w-full mb-16 relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="h-[1px] w-12 bg-cyan-400" />
-                    <span className="font-mono text-cyan-400 text-sm tracking-widest">
-                        {isArabic ? "الترسانة التقنية" : "TECHNICAL_ARSENAL"}
-                    </span>
-                </div>
-                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase">
-                    {isArabic ? "قدرات" : "Full Stack"} <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-600">
-                        {isArabic ? "التطوير المتكامل" : "Capabilities"}
-                    </span>
-                </h2>
-            </div>
+      // 2. Velocity Skew Effect (The "Smoothness" magic)
+      // Skews the text based on scroll speed
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        onUpdate: (self) => {
+          const skew = self.getVelocity() / -300;
+          // Clamp skew to avoid text becoming unreadable
+          const clampedSkew = Math.max(-10, Math.min(10, skew));
+          
+          gsap.to(el, {
+            skewX: clampedSkew,
+            duration: 0.8,
+            ease: 'power3.out',
+            overwrite: 'auto'
+          });
+        }
+      });
 
-            {/* Marquee Rows */}
-            <div className="relative z-10 space-y-8">
-                <MarqueeRow items={ROW_1} direction="left" speed={40} />
-                <MarqueeRow items={ROW_2} direction="right" speed={45} />
-            </div>
+    }, containerRef);
 
-            {/* Gradient Overlay for Smooth Fade Edges */}
-            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#050505] to-transparent z-20 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#050505] to-transparent z-20 pointer-events-none" />
+    return () => ctx.revert();
+  }, [direction, speed]);
 
-        </section>
-    );
+  // Pause/Slow on Hover
+  const handleEnter = () => gsap.to(timelineRef.current, { timeScale: 0.2, duration: 0.5 });
+  const handleLeave = () => gsap.to(timelineRef.current, { timeScale: 1, duration: 0.5 });
+
+  return (
+    <div 
+      ref={containerRef}
+      className="overflow-hidden py-4 w-full"
+      style={{ transform: `rotate(${tilt}deg)` }}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      <div ref={trackRef} className="flex w-max will-change-transform cursor-default select-none">
+        {/* Triple duplication ensures no gaps on wide screens */}
+        {[...items, ...items, ...items].map((item, i) => (
+          <SkillItem key={`${item}-${i}`} text={item} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// --- MAIN SECTION ---
+export default function SkillsSection() {
+  const containerRef = useRef(null);
+  const pathname = usePathname();
+  const isArabic = pathname?.startsWith("/ar");
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      // Reveal Animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 75%',
+          toggleActions: 'play none none reverse'
+        }
+      });
+
+      tl.fromTo('.skill-label', 
+        { y: 20, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 1 }
+      )
+      .fromTo('.skill-marquee', 
+        { y: 100, opacity: 0, rotate: 5 }, 
+        { y: 0, opacity: 1, rotate: 0, duration: 1.2, ease: 'power3.out', stagger: 0.2 }, 
+        "-=0.8"
+      );
+
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={containerRef}
+      className="relative py-32 md:py-48 bg-[#050505] text-white overflow-hidden flex flex-col justify-center"
+    >
+      {/* Background Ambience */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03),transparent_70%)] pointer-events-none" />
+
+     
+
+      {/* Marquee Container */}
+      <div className="flex flex-col gap-8 md:gap-0 relative z-10">
+        
+        {/* Row 1: Slight Tilt Up */}
+        <div className="skill-marquee opacity-0">
+          <MarqueeRow 
+            items={ROW_1} 
+            direction={-1} 
+            speed={50} 
+            tilt={-1.5} // Creative Tilt
+          />
+        </div>
+
+        {/* Row 2: Slight Tilt Down */}
+        <div className="skill-marquee opacity-0">
+          <MarqueeRow 
+            items={ROW_2} 
+            direction={1} 
+            speed={50} 
+            tilt={1.5} // Creative Tilt
+          />
+        </div>
+
+      </div>
+
+      {/* Vignette Overlay for smooth fade out at edges */}
+      <div className="absolute inset-y-0 left-0 w-24 md:w-48 bg-gradient-to-r from-[#050505] to-transparent z-20 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-24 md:w-48 bg-gradient-to-l from-[#050505] to-transparent z-20 pointer-events-none" />
+
+    </section>
+  );
 }

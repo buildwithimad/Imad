@@ -1,10 +1,12 @@
 // app/layout.jsx
 import { Space_Grotesk } from 'next/font/google';
 import './globals.css';
-import GoogleAnalytics from '@/components/GoogleAnalytics';
 import ClientWrapper from '@/components/ClientWrapper';
 import LayoutWrapper from '@/components/LayoutWrapper';
 import GoogleTagManager from '@/components/GoogleTagManager';
+import LenisProvider from '@/components/Ui/LenisProvider';
+import { Bot } from 'lucide-react';
+import BottomHUD from '@/components/BottomSocials';
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -21,12 +23,15 @@ export default function RootLayout({ children }) {
         <GoogleTagManager/>
       </head>
       <body className={`${spaceGrotesk.variable} antialiased`}>
-        <GoogleAnalytics />
+        <LenisProvider>
         <LayoutWrapper>
           <ClientWrapper>
+            <BottomHUD />
             {children} {/* all page content */}
+            <BottomHUD/>
           </ClientWrapper>
         </LayoutWrapper>
+        </LenisProvider>
       </body>
     </html>
   );

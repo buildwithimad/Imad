@@ -3,10 +3,8 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import useLenis from '@/hooks/useLenis';
 
 export default function ZoomHeroSection() {
-  useLenis();
   const containerRef = useRef(null);
   const pathname = usePathname();
   const isArabic = pathname?.startsWith("/ar");

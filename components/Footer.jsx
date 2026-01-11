@@ -31,9 +31,9 @@ const [time, setTime] = useState("");
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
-        { name: 'GITHUB', href: 'https://github.com/ImaadDev' },
+        { name: 'GITHUB', href: 'https://github.com/buildwithimad' },
         { name: 'LINKEDIN', href: 'https://www.linkedin.com/in/imad-hussain-khan-76388b305' },
-        { name: 'INSTAGRAM', href: 'https://www.instagram.com/imaddeveloper?igsh=bXJ4MXB4bmo2djAy' },
+        { name: 'INSTAGRAM', href: 'https://www.instagram.com/devnexstudio' },
     ];
 
     return (

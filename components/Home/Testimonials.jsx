@@ -1,296 +1,179 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import gsap from 'gsap';
+import { usePathname } from 'next/navigation';
 
 export default function Testimonials() {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isPaused, setIsPaused] = useState(false);
-    const [testimonials, setTestimonials] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const pathname = usePathname();
-    const isArabic = pathname?.startsWith("/ar");
+  const containerRef = useRef(null);
+  const imageRef = useRef(null);
+  const textRef = useRef(null);
+  const quoteRef = useRef(null);
 
-    useEffect(() => {
-        const fetchTestimonials = async () => {
-            try {
-                const response = await fetch('/api/reviews');
-                if (response.ok) {
-                    const data = await response.json();
-                    setTestimonials(data);
-                } else {
-                    // Fallback to static data if API fails
-                    console.warn('Failed to fetch reviews from Sanity, using fallback data');
-                    const fallbackTestimonials = [
-                        {
-                            client: { en: "Sarah Jenkins", ar: "سارة جنكينز" },
-                            role: { en: "CTO, FINTECH FLOW", ar: "المدير التقني، فينتك فلو" },
-                            image: { asset: { url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop" } },
-                            quote: {
-                                en: "Imad didn't just build a website; he engineered a scalable system. The attention to modular architecture changed how our team approaches development.",
-                                ar: "لم يقم عماد ببناء موقع ويب فحسب؛ بل صمم نظاماً قابلاً للتوسع. الاهتمام بالبنية المعيارية غيّر طريقة تعامل فريقنا مع التطوير."
-                            },
-                            location: { en: "LONDON, UK", ar: "لندن، المملكة المتحدة" }
-                        },
-                        {
-                            client: { en: "Marcus Thorne", ar: "ماركوس ثورن" },
-                            role: { en: "Creative Director, ORBITAL", ar: "المدير الإبداعي، أوربيتال" },
-                            image: { asset: { url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop" } },
-                            quote: {
-                                en: "A rare combination of creative vision and technical precision. He translated our complex 3D concepts into a seamless browser experience.",
-                                ar: "مزيج نادر من الرؤية الإبداعية والدقة التقنية. لقد ترجم مفاهيمنا ثلاثية الأبعاد المعقدة إلى تجربة متصفح سلسة."
-                            },
-                            location: { en: "BERLIN, DE", ar: "برلين، ألمانيا" }
-                        },
-                        {
-                            client: { en: "Elena Rodriguez", ar: "إيلينا رودريغيز" },
-                            role: { en: "Founder, AETHER LABS", ar: "المؤسس، مختبرات إيثر" },
-                            image: { asset: { url: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1000&auto=format&fit=crop" } },
-                            quote: {
-                                en: "We needed a site that looked like it was from 2030. The animations are buttery smooth, and conversion increased by 40% post-launch.",
-                                ar: "كنا بحاجة إلى موقع يبدو وكأنه من عام 2030. الرسوم المتحركة سلسة للغاية، وزاد معدل التحويل بنسبة 40% بعد الإطلاق."
-                            },
-                            location: { en: "TOKYO, JP", ar: "طوكيو، اليابان" }
-                        }
-                    ];
-                    setTestimonials(fallbackTestimonials);
-                }
-            } catch (error) {
-                console.error('Error fetching testimonials:', error);
-                // Fallback data
-                const fallbackTestimonials = [];
-                setTestimonials(fallbackTestimonials);
-            } finally {
-                setLoading(false);
-            }
-        };
+  const [index, setIndex] = useState(0);
+  const [testimonials, setTestimonials] = useState([]);
 
-        fetchTestimonials();
-    }, []);
+  const pathname = usePathname();
+  const isArabic = pathname?.startsWith('/ar');
 
-    // Navigation Logic
-    const handleNext = useCallback(() => {
-        if (testimonials.length > 0) {
-            setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-        }
-    }, [testimonials.length]);
+  /* ---------------- FETCH ---------------- */
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const res = await fetch('/api/reviews');
+        const data = res.ok ? await res.json() : [];
+        setTestimonials(data);
+      } catch {
+        // Fallback for demo
+        setTestimonials([
+          {
+            client: { en: 'Sarah Chen', ar: 'سارة تشين' },
+            role: { en: 'Tech Lead @ Prisma', ar: 'قائدة تقنية' },
+            quote: { en: 'Their architectural decisions saved us months of rework.', ar: 'قراراتهم المعمارية وفرت علينا شهورًا من العمل.' },
+            image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=1000'
+          }
+        ]);
+      }
+    };
+    fetchTestimonials();
+  }, []);
 
-    const handlePrev = useCallback(() => {
-        if (testimonials.length > 0) {
-            setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-        }
-    }, [testimonials.length]);
+  /* ---------------- SUPER SMOOTH ANIMATION ---------------- */
+  useEffect(() => {
+    if (!testimonials.length) return;
 
-    // Auto-Play Effect
-    useEffect(() => {
-        if (isPaused || testimonials.length === 0) return;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
 
-        const timer = setInterval(() => {
-            handleNext();
-        }, 5000); // Change slides every 5 seconds
+      // Reset positions for a fresh start
+      gsap.set([quoteRef.current, textRef.current], { yPercent: 100, opacity: 0 });
+      gsap.set(imageRef.current, { scale: 1.1, filter: 'grayscale(100%)' });
 
-        // Cleanup timer on unmount or when dependencies change (resetting the clock)
-        return () => clearInterval(timer);
-    }, [handleNext, isPaused, currentIndex, testimonials.length]); // currentIndex dependency ensures timer resets on manual click
+      tl.to(imageRef.current, {
+        scale: 1,
+        filter: 'grayscale(0%)',
+        duration: 1.5,
+      })
+      .to(quoteRef.current, {
+        yPercent: 0,
+        opacity: 1,
+      }, "-=1.2")
+      .to(textRef.current, {
+        yPercent: 0,
+        opacity: 1,
+        stagger: 0.1
+      }, "-=1");
 
-    if (loading) {
-        return (
-            <section className="min-h-screen bg-[#0a0a0a] text-white py-24 px-4 relative flex items-center justify-center overflow-hidden">
-                <div className="flex justify-center items-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div>
-                </div>
-            </section>
-        );
-    }
+    }, containerRef);
 
-    if (testimonials.length === 0) {
-        return (
-            <section className="min-h-screen bg-[#0a0a0a] text-white py-24 px-4 relative flex items-center justify-center overflow-hidden">
-                <div className="text-center">
-                    <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-4">
-                        {isArabic ? "لا توجد مراجعات حالياً" : "NO REVIEWS CURRENTLY"}
-                    </h2>
-                    <p className="text-gray-400 font-mono">
-                        {isArabic ? "سيتم إضافة المراجعات قريباً" : "Reviews will be added soon"}
-                    </p>
-                </div>
-            </section>
-        );
-    }
+    return () => ctx.revert();
+  }, [index, testimonials]);
 
-    return (
-        <section className="min-h-screen bg-[#0a0a0a] text-white py-24 px-4 relative flex items-center justify-center overflow-hidden">
+  if (!testimonials.length) return null;
+  const t = testimonials[index];
 
-            {/* Background Decor */}
-            <div className="absolute top-20 right-0 text-[20vw] font-black text-white/5 leading-none select-none pointer-events-none truncate">
-                {isArabic ? "آراء العملاء" : "FEEDBACK"}
+  return (
+    <section
+      ref={containerRef}
+      className="relative bg-[#050505] text-white py-32 md:py-64 px-6 overflow-hidden"
+    >
+      {/* Dynamic Background Counter */}
+      <div className="absolute top-10 right-10 font-mono text-[15vw] leading-none opacity-[0.02] select-none pointer-events-none">
+        0{index + 1}
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
+        
+        {/* Header - Kinetic Reveal */}
+        <div className="mb-24 overflow-hidden">
+          <p className="font-mono text-[10px] tracking-[0.5em] text-cyan-500 uppercase mb-4">
+            {isArabic ? 'آراء العملاء' : 'Testimonials'}
+          </p>
+          <h2 className="text-[clamp(2rem,5vw,4rem)] font-light tracking-tighter">
+            {isArabic ? 'شركاء النجاح' : 'Success Stories'}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+
+          {/* IMAGE - Fractional Scale Effect */}
+          <div className="lg:col-span-5 relative group">
+            <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900 border border-white/5">
+              <div ref={imageRef} className="relative h-full w-full will-change-transform">
+                <Image
+                  src={t.image?.asset?.url || t.image}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              
+              {/* Corner Accents */}
+              <div className="absolute top-4 left-4 w-8 h-px bg-white/20" />
+              <div className="absolute top-4 left-4 h-8 w-px bg-white/20" />
+            </div>
+          </div>
+
+          {/* TEXT - Masked Reveal */}
+          <div className="lg:col-span-7">
+            <div className="overflow-hidden mb-12">
+              <blockquote ref={quoteRef} className="text-2xl md:text-5xl font-light leading-[1.2] tracking-tight will-change-transform">
+                “{t.quote?.[isArabic ? 'ar' : 'en']}”
+              </blockquote>
             </div>
 
-            <div className="max-w-7xl mx-auto w-full relative z-10">
+            <div className="flex flex-col gap-8">
+              <div className="overflow-hidden">
+                <div ref={textRef} className="border-l-2 border-cyan-500 pl-6 py-2">
+                  <p className="text-xl font-medium tracking-tight">
+                    {t.client?.[isArabic ? 'ar' : 'en']}
+                  </p>
+                  <p className="text-sm font-mono text-neutral-500 uppercase tracking-widest mt-1">
+                    {t.role?.[isArabic ? 'ar' : 'en']}
+                  </p>
+                </div>
+              </div>
 
-                {/* Header */}
-                <div className="flex justify-between items-end border-b border-white/20 pb-6 mb-12">
-                    <div>
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className="w-2 h-2 bg-cyan-400 animate-pulse"></div>
-                            <span className="font-mono text-xs text-cyan-400 tracking-widest">
-                                {isArabic ? "نقل مشفر" : "ENCRYPTED_TRANSMISSION"}
-                            </span>
-                        </div>
-                        <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight">
-                            {isArabic ? "ملفات العملاء" : "Client Dossiers"}
-                        </h2>
-                    </div>
-
-                    {/* Controls - Top Right for Desktop */}
-                    <div className="hidden md:flex gap-0 border border-white/20">
-                        <button
-                            onClick={handlePrev}
-                            className="px-6 py-4 hover:bg-white hover:text-black transition-colors border-r border-white/20 font-bold text-xs tracking-widest"
-                        >
-                            {isArabic ? "السجل السابق" : "PREV_LOG"}
-                        </button>
-                        <button
-                            onClick={handleNext}
-                            className="px-6 py-4 hover:bg-white hover:text-black transition-colors font-bold text-xs tracking-widest"
-                        >
-                            {isArabic ? "السجل التالي" : "NEXT_LOG"}
-                        </button>
-                    </div>
+              {/* Interaction UI */}
+              <div className="flex items-center gap-12 mt-8">
+                {/* Navigation */}
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setIndex((i) => (i - 1 + testimonials.length) % testimonials.length)}
+                    className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-500 group"
+                  >
+                    <span className="group-hover:-translate-x-1 transition-transform">←</span>
+                  </button>
+                  <button
+                    onClick={() => setIndex((i) => (i + 1) % testimonials.length)}
+                    className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-500 group"
+                  >
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 h-full items-center">
-
-                    {/* LEFT: VISUAL IDENTITY CARD */}
-                    <div className="lg:col-span-5 relative group">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentIndex}
-                                initial={{ opacity: 0, scale: 0.95, filter: "grayscale(100%)" }}
-                                animate={{ opacity: 1, scale: 1, filter: "grayscale(0%)" }}
-                                exit={{ opacity: 0, scale: 1.05, filter: "grayscale(100%)" }}
-                                transition={{ duration: 0.5, ease: "circOut" }}
-                                className="relative w-full border border-white/20 bg-white/5 p-2"
-                            >
-                                {/* Tech Corners */}
-                                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-400 -mt-px -ml-px z-20"></div>
-                                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 -mb-px -mr-px z-20"></div>
-
-                                {/* The Image */}
-                                <div className="relative w-full h-full overflow-hidden bg-black">
-                                    <Image
-                                        src={testimonials[currentIndex].image?.asset?.url || testimonials[currentIndex].image}
-                                        alt={testimonials[currentIndex].client?.[isArabic ? 'ar' : 'en'] || testimonials[currentIndex].client}
-                                        width={400}
-                                        height={500}
-                                        className="w-full h-auto opacity-90"
-                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                        priority={currentIndex === 0}
-                                        placeholder="blur"
-                                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+IRjWjBqO6O2mhP//Z"
-                                    />
-
-                                    {/* Scanning Line Animation */}
-                                    <motion.div
-                                        className="absolute top-0 left-0 right-0 h-1 bg-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.5)] z-10"
-                                        animate={{ top: ["0%", "100%", "0%"] }}
-                                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                                    />
-
-                                    {/* Overlay Grid */}
-                                    <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.2)_50%)] bg-[length:100%_4px] pointer-events-none mix-blend-overlay"></div>
-                                </div>
-
-                                {/* Meta Tag */}
-                                <div className="absolute bottom-6 left-6 bg-black/80 backdrop-blur-sm border border-white/20 px-3 py-1 z-20">
-                                    <p className="font-mono text-[10px] text-cyan-400 tracking-widest">
-                                        ID: {testimonials[currentIndex].accessLevel}
-                                    </p>
-                                </div>
-
-                                {/* Auto-Play Progress Indicator (Visual Timer) */}
-                                <motion.div
-                                    key={`progress-${currentIndex}`}
-                                    className="absolute bottom-0 left-0 h-1 bg-cyan-400 z-30"
-                                    initial={{ width: "0%" }}
-                                    animate={{ width: "100%" }}
-                                    transition={{ duration: 5, ease: "linear" }}
-                                />
-
-                            </motion.div>
-                        </AnimatePresence>
-                    </div>
-
-                    {/* RIGHT: CONTENT STREAM */}
-                    <div
-                        className="lg:col-span-7 flex flex-col justify-center relative"
-                        onMouseEnter={() => setIsPaused(true)}
-                        onMouseLeave={() => setIsPaused(false)}
-                    >
-
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentIndex}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.4 }}
-                            >
-                                {/* Audio Visualizer Effect */}
-                                <div className="flex gap-1 h-8 items-end mb-8 opacity-50">
-                                    {[...Array(10)].map((_, i) => (
-                                        <motion.div
-                                            key={i}
-                                            className="w-1 bg-cyan-400"
-                                            animate={{ height: ["20%", "100%", "40%"] }}
-                                            transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse", delay: i * 0.1 }}
-                                        />
-                                    ))}
-                                </div>
-
-                                <blockquote className="text-3xl md:text-5xl font-medium leading-tight mb-8">
-                                    "{testimonials[currentIndex].quote?.[isArabic ? 'ar' : 'en'] || testimonials[currentIndex].quote}"
-                                </blockquote>
-
-                                <div className="flex items-start gap-8 border-t border-white/10 pt-8">
-                                    <div className="flex-1">
-                                        <h4 className="text-2xl font-black uppercase text-white mb-1">
-                                            {testimonials[currentIndex].client?.[isArabic ? 'ar' : 'en'] || testimonials[currentIndex].client}
-                                        </h4>
-                                        <p className="font-mono text-sm text-gray-400">
-                                            {testimonials[currentIndex].role?.[isArabic ? 'ar' : 'en'] || testimonials[currentIndex].role}
-                                        </p>
-                                    </div>
-
-                                    <div className="text-right hidden sm:block">
-                                        <p className="font-mono text-[10px] text-gray-500 uppercase mb-1">{isArabic ? "الموقع" : "Location"}</p>
-                                        <p className="font-bold text-white uppercase tracking-wider">{testimonials[currentIndex].location?.[isArabic ? 'ar' : 'en'] || testimonials[currentIndex].location}</p>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </AnimatePresence>
-
-                        {/* Mobile Controls */}
-                        <div className="flex md:hidden gap-4 mt-8">
-                            <button
-                                onClick={handlePrev}
-                                className="flex-1 py-4 border border-white/20 text-xs font-bold uppercase hover:bg-white hover:text-black transition-colors"
-                            >
-                                {isArabic ? "السابق" : "Prev"}
-                            </button>
-                            <button
-                                onClick={handleNext}
-                                className="flex-1 py-4 border border-white/20 text-xs font-bold uppercase hover:bg-white hover:text-black transition-colors"
-                            >
-                                {isArabic ? "التالي" : "Next"}
-                            </button>
-                        </div>
-
-                    </div>
+                {/* Progress Bar */}
+                <div className="hidden md:block flex-1 h-px bg-white/10 relative overflow-hidden">
+                  <div 
+                    className="absolute left-0 top-0 h-full bg-cyan-500 transition-all duration-1000 ease-expo"
+                    style={{ width: `${((index + 1) / testimonials.length) * 100}%` }}
+                  />
                 </div>
+
+                <div className="font-mono text-xs text-neutral-500 tracking-tighter">
+                  {index + 1} / {testimonials.length}
+                </div>
+              </div>
             </div>
-        </section>
-    );
+          </div>
+
+        </div>
+      </div>
+
+      {/* Aesthetic Bottom Fade */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent pointer-events-none" />
+    </section>
+  );
 }
